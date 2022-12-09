@@ -10,16 +10,15 @@ import (
 	"strings"
 	"time"
 
+	client "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/"
+	"github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/utils"
+	v3 "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/v3"
 	"github.com/docker/machine/libmachine/drivers"
 	"github.com/docker/machine/libmachine/mcnflag"
 	"github.com/docker/machine/libmachine/ssh"
 	"github.com/docker/machine/libmachine/state"
-	"github.com/nutanix/docker-machine/utils"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
-
-	//client "github.com/nutanix-cloud-native/prism-go-client/pkg/nutanix"
-	//v3 "github.com/nutanix-cloud-native/prism-go-client/pkg/nutanix/v3"
 )
 
 const (
@@ -479,13 +478,13 @@ waitTask:
 }
 
 // DriverName returns the name of the driver
-func (d *NutanixDriver) DriverName() string {
+func (d *HyperVDriver) DriverName() string {
 	return "nutanix"
 }
 
 // GetCreateFlags returns the mcnflag.Flag slice representing the flags
 // that can be set, their descriptions and defaults.
-func (d *NutanixDriver) GetCreateFlags() []mcnflag.Flag {
+func (d *HyperVDriver) GetCreateFlags() []mcnflag.Flag {
 	return []mcnflag.Flag{
 		mcnflag.StringFlag{
 			EnvVar: "NUTANIX_USERNAME",
@@ -592,12 +591,12 @@ func (d *NutanixDriver) GetCreateFlags() []mcnflag.Flag {
 }
 
 // GetSSHHostname returns hostname for use with ssh
-func (d *NutanixDriver) GetSSHHostname() (string, error) {
+func (d *HyperVDriver) GetSSHHostname() (string, error) {
 	return d.GetIP()
 }
 
 // GetURL returns a Docker compatible host URL for connecting to this host
-func (d *NutanixDriver) GetURL() (string, error) {
+func (d *HyperVDriver) GetURL() (string, error) {
 	ip, err := d.GetIP()
 	if err != nil {
 		return "", err
@@ -606,7 +605,7 @@ func (d *NutanixDriver) GetURL() (string, error) {
 }
 
 // GetState returns the state that the host is in (running, stopped, etc)
-func (d *NutanixDriver) GetState() (state.State, error) {
+func (d *HyperVDriver) GetState() (state.State, error) {
 
 	configCreds := client.Credentials{
 		URL:         fmt.Sprintf("%s:%s", d.Endpoint, d.Port),
@@ -640,12 +639,12 @@ func (d *NutanixDriver) GetState() (state.State, error) {
 }
 
 // Kill stops a host forcefully
-func (d *NutanixDriver) Kill() error {
+func (d *HyperVDriver) Kill() error {
 	return d.Stop()
 }
 
 // Remove a host
-func (d *NutanixDriver) Remove() error {
+func (d *HyperVDriver) Remove() error {
 	name := d.GetMachineName()
 
 	configCreds := client.Credentials{
@@ -687,7 +686,7 @@ func (d *NutanixDriver) Remove() error {
 
 // Restart a host. This may just call Stop(); Start() if the provider does not
 // have any special restart behaviour.
-func (d *NutanixDriver) Restart() error {
+func (d *HyperVDriver) Restart() error {
 	err := d.Stop()
 	if err != nil {
 		return err
@@ -697,7 +696,7 @@ func (d *NutanixDriver) Restart() error {
 
 // SetConfigFromFlags configures the driver with the object that was returned
 // by RegisterCreateFlags
-func (d *NutanixDriver) SetConfigFromFlags(opts drivers.DriverOptions) error {
+func (d *HyperVDriver) SetConfigFromFlags(opts drivers.DriverOptions) error {
 	d.Username = opts.String("nutanix-username")
 	if d.Username == "" {
 		return fmt.Errorf("nutanix-username cannot be empty")
@@ -746,7 +745,7 @@ func (d *NutanixDriver) SetConfigFromFlags(opts drivers.DriverOptions) error {
 }
 
 // Start a host
-func (d *NutanixDriver) Start() error {
+func (d *HyperVDriver) Start() error {
 	name := d.GetMachineName()
 
 	configCreds := client.Credentials{
@@ -798,7 +797,7 @@ func (d *NutanixDriver) Start() error {
 }
 
 // Stop a host gracefully
-func (d *NutanixDriver) Stop() error {
+func (d *HyperVDriver) Stop() error {
 	name := d.GetMachineName()
 
 	configCreds := client.Credentials{
