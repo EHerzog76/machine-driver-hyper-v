@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/internal"
+	"../internal"
 	"github.com/go-logr/logr"
 )
 
