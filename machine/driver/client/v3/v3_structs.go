@@ -3,7 +3,7 @@ package v3
 import (
 	"time"
 
-	prismgoclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
+	vmclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
 )
 
 // Reference ...
@@ -582,7 +582,7 @@ type DSMetadata struct {
 	SortOrder *string `json:"sort_order,omitempty" mapstructure:"sort_order,omitempty"`
 
 	// Additional filters for client side filtering api response
-	ClientSideFilters []*prismgoclient.AdditionalFilter `json:"-"`
+	ClientSideFilters []*vmclient.AdditionalFilter `json:"-"`
 }
 
 // VMIntentResource Response object for intentful operations on a vm

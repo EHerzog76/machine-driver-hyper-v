@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	prismgoclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
+	vmclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
 	"github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/internal"
 	"github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/utils"
 )
@@ -57,7 +57,7 @@ type Service interface {
 	DeleteVolumeGroup(ctx context.Context, uuid string) error
 	CreateVolumeGroup(ctx context.Context, request *VolumeGroupInput) (*VolumeGroupResponse, error)
 	ListAllVM(ctx context.Context, filter string) (*VMListIntentResponse, error)
-	ListAllSubnet(ctx context.Context, filter string, clientSideFilters []*prismgoclient.AdditionalFilter) (*SubnetListIntentResponse, error)
+	ListAllSubnet(ctx context.Context, filter string, clientSideFilters []*vmclient.AdditionalFilter) (*SubnetListIntentResponse, error)
 	ListAllNetworkSecurityRule(ctx context.Context, filter string) (*NetworkSecurityRuleListIntentResponse, error)
 	ListAllImage(ctx context.Context, filter string) (*ImageListIntentResponse, error)
 	ListAllCluster(ctx context.Context, filter string) (*ClusterListIntentResponse, error)
@@ -876,7 +876,7 @@ func (op Operations) ListAllVM(ctx context.Context, filter string) (*VMListInten
 }
 
 // ListAllSubnet ...
-func (op Operations) ListAllSubnet(ctx context.Context, filter string, clientSideFilters []*prismgoclient.AdditionalFilter) (*SubnetListIntentResponse, error) {
+func (op Operations) ListAllSubnet(ctx context.Context, filter string, clientSideFilters []*vmclient.AdditionalFilter) (*SubnetListIntentResponse, error) {
 	entities := make([]*SubnetIntentResponse, 0)
 
 	resp, err := op.ListSubnet(ctx, &DSMetadata{

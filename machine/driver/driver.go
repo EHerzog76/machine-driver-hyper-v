@@ -10,7 +10,6 @@ import (
 	"strings"
 	"time"
 
-	client "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
 	"github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/utils"
 	v3 "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/v3"
 
@@ -70,7 +69,7 @@ func NewDriver(hostname, storePath string) *HyperVDriver {
 func (d *HyperVDriver) Create() error {
 	name := d.GetMachineName()
 
-	configCreds := client.Credentials{
+	configCreds := vmclient.Credentials{
 		URL:         fmt.Sprintf("%s:%s", d.Endpoint, d.Port),
 		Endpoint:    d.Endpoint,
 		Username:    d.Username,
@@ -608,7 +607,7 @@ func (d *HyperVDriver) GetURL() (string, error) {
 // GetState returns the state that the host is in (running, stopped, etc)
 func (d *HyperVDriver) GetState() (state.State, error) {
 
-	configCreds := client.Credentials{
+	configCreds := vmclient.Credentials{
 		URL:         fmt.Sprintf("%s:%s", d.Endpoint, d.Port),
 		Endpoint:    d.Endpoint,
 		Username:    d.Username,
@@ -648,7 +647,7 @@ func (d *HyperVDriver) Kill() error {
 func (d *HyperVDriver) Remove() error {
 	name := d.GetMachineName()
 
-	configCreds := client.Credentials{
+	configCreds := vmclient.Credentials{
 		URL:         fmt.Sprintf("%s:%s", d.Endpoint, d.Port),
 		Endpoint:    d.Endpoint,
 		Username:    d.Username,
@@ -749,7 +748,7 @@ func (d *HyperVDriver) SetConfigFromFlags(opts drivers.DriverOptions) error {
 func (d *HyperVDriver) Start() error {
 	name := d.GetMachineName()
 
-	configCreds := client.Credentials{
+	configCreds := vmclient.Credentials{
 		URL:         fmt.Sprintf("%s:%s", d.Endpoint, d.Port),
 		Endpoint:    d.Endpoint,
 		Username:    d.Username,
@@ -801,7 +800,7 @@ func (d *HyperVDriver) Start() error {
 func (d *HyperVDriver) Stop() error {
 	name := d.GetMachineName()
 
-	configCreds := client.Credentials{
+	configCreds := vmclient.Credentials{
 		URL:         fmt.Sprintf("%s:%s", d.Endpoint, d.Port),
 		Endpoint:    d.Endpoint,
 		Username:    d.Username,
@@ -849,6 +848,6 @@ func (d *HyperVDriver) Stop() error {
 	return fmt.Errorf("unable to Stop VM %s", name)
 }
 
-func getEmptyClientSideFilter() []*client.AdditionalFilter {
-	return make([]*client.AdditionalFilter, 0)
+func getEmptyClientSideFilter() []*vmclient.AdditionalFilter {
+	return make([]*vmclient.AdditionalFilter, 0)
 }

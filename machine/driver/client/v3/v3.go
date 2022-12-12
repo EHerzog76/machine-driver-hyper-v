@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	prismgoclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
+	vmclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
 	"github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/internal"
 
 	"github.com/go-logr/logr"
@@ -75,7 +75,7 @@ func WithLogger(logger *logr.Logger) ClientOption {
 }
 
 // NewV3Client return a internal to operate V3 resources
-func NewV3Client(credentials prismgoclient.Credentials, opts ...ClientOption) (*Client, error) {
+func NewV3Client(credentials vmclient.Credentials, opts ...ClientOption) (*Client, error) {
 	v3Client := &Client{}
 	for _, opt := range opts {
 		if err := opt(v3Client); err != nil {

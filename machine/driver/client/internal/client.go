@@ -15,7 +15,7 @@ import (
 	"os"
 	"strings"
 
-	prismgoclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
+	vmclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
 	"github.com/PaesslerAG/jsonpath"
 	"github.com/go-logr/logr"
 	"github.com/go-logr/zapr"
@@ -40,7 +40,7 @@ type RequestCompletionCallback func(*http.Request, *http.Response, interface{})
 
 // Client Config Configuration of the httpClient
 type Client struct {
-	credentials *prismgoclient.Credentials
+	credentials *vmclient.Credentials
 
 	// HTTP httpClient used to communicate with the Nutanix API.
 	httpClient *http.Client
@@ -77,7 +77,7 @@ func WithLogger(logger *logr.Logger) ClientOption {
 }
 
 // WithCredentials sets the credentials for the httpClient
-func WithCredentials(credentials *prismgoclient.Credentials) ClientOption {
+func WithCredentials(credentials *vmclient.Credentials) ClientOption {
 	return func(c *Client) error {
 		c.credentials = credentials
 		if c.credentials.Insecure {
@@ -486,7 +486,7 @@ func searchSlice(slice []string, key string) bool {
 }
 
 // DoWithFilters performs request passed and filters entities in json response
-func (c *Client) DoWithFilters(ctx context.Context, req *http.Request, v interface{}, filters []*prismgoclient.AdditionalFilter, baseSearchPaths []string) error {
+func (c *Client) DoWithFilters(ctx context.Context, req *http.Request, v interface{}, filters []*vmclient.AdditionalFilter, baseSearchPaths []string) error {
 	// check if httpClient exists or not
 	if c.httpClient == nil {
 		return fmt.Errorf(c.ErrorMsg)
@@ -535,7 +535,7 @@ func (c *Client) DoWithFilters(ctx context.Context, req *http.Request, v interfa
 	return err
 }
 
-func filter(body io.ReadCloser, filters []*prismgoclient.AdditionalFilter, baseSearchPaths []string) (io.ReadCloser, error) {
+func filter(body io.ReadCloser, filters []*vmclient.AdditionalFilter, baseSearchPaths []string) (io.ReadCloser, error) {
 	if filters == nil {
 		return body, nil
 	}
@@ -555,7 +555,7 @@ func filter(body io.ReadCloser, filters []*prismgoclient.AdditionalFilter, baseS
 
 	// Full search paths
 	searchPaths := map[string][]string{}
-	filterMap := map[string]*prismgoclient.AdditionalFilter{}
+	filterMap := map[string]*vmclient.AdditionalFilter{}
 	for _, filter := range filters {
 		filterMap[filter.Name] = filter
 		// Build search paths by appending target search paths to base paths
