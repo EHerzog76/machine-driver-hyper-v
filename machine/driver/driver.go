@@ -167,7 +167,7 @@ func (d *HyperVDriver) Create() error {
 	}
 
 	log.Infof("Cluster %s find with UUID: %s", *foundClusters[0].Status.Name, *foundClusters[0].Metadata.UUID)
-	spec.ClusterReference = utils.BuildReference(*foundClusters[0].Metadata.UUID, "cluster")
+	spec.ClusterReference = BuildReference(*foundClusters[0].Metadata.UUID, "cluster")
 
 	// Search target subnet
 
@@ -198,7 +198,7 @@ func (d *HyperVDriver) Create() error {
 		for _, subnet := range subnets.Entities {
 			if *subnet.Status.Name == query && *subnet.Status.ClusterReference.UUID == *spec.ClusterReference.UUID {
 				n := &v3.VMNic{
-					SubnetReference: utils.BuildReference(*subnet.Metadata.UUID, "subnet"),
+					SubnetReference: BuildReference(*subnet.Metadata.UUID, "subnet"),
 				}
 
 				res.NicList = append(res.NicList, n)
@@ -257,13 +257,13 @@ func (d *HyperVDriver) Create() error {
 			if d.ImageSize > 0 {
 				newSize := int64(d.ImageSize * 1024)
 				n := &v3.VMDisk{
-					DataSourceReference: utils.BuildReference(*image.Metadata.UUID, "image"),
+					DataSourceReference: BuildReference(*image.Metadata.UUID, "image"),
 					DiskSizeMib:         &newSize,
 				}
 				res.DiskList = append(res.DiskList, n)
 			} else {
 				n := &v3.VMDisk{
-					DataSourceReference: utils.BuildReference(*image.Metadata.UUID, "image"),
+					DataSourceReference: BuildReference(*image.Metadata.UUID, "image"),
 				}
 				res.DiskList = append(res.DiskList, n)
 			}
@@ -850,4 +850,12 @@ func (d *HyperVDriver) Stop() error {
 
 func getEmptyClientSideFilter() []*vmclient.AdditionalFilter {
 	return make([]*vmclient.AdditionalFilter, 0)
+}
+
+// BuildReference create reference from defined object
+func BuildReference(uuid, kind string) *v3.Reference {
+	return &v3.Reference{
+		Kind: utils.StringPtr(kind),
+		UUID: utils.StringPtr(uuid),
+	}
 }
