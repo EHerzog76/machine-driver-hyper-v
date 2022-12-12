@@ -1,8 +1,9 @@
 package main
 
 import (
+	"docker-machine-driver-hyper-v/machine/driver"
+
 	"github.com/docker/machine/libmachine/drivers/plugin"
-	"github.com/EHerzog76/docker-machine/machine/driver"
 )
 
 func main() {

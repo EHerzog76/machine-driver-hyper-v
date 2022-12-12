@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	"../internal"
-	"../utils"
+	"docker-machine-driver-hyper-v/machine/driver/client/internal"
+	"docker-machine-driver-hyper-v/machine/driver/client/utils"
 )
 
 // Operations ...

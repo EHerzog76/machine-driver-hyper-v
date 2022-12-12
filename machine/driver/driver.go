@@ -10,9 +10,10 @@ import (
 	"strings"
 	"time"
 
-	client "../driver/client/"
-	"../driver/client/utils"
-	v3 "../driver/client/v3"
+	client "docker-machine-driver-hyper-v/machine/driver/client"
+	"docker-machine-driver-hyper-v/machine/driver/client/utils"
+	v3 "docker-machine-driver-hyper-v/machine/driver/client/v3"
+
 	"github.com/docker/machine/libmachine/drivers"
 	"github.com/docker/machine/libmachine/mcnflag"
 	"github.com/docker/machine/libmachine/ssh"
