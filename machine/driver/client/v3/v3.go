@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	prismgoclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
 	"github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/internal"
 
 	"github.com/go-logr/logr"

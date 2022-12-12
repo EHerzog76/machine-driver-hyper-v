@@ -2,6 +2,8 @@ package v3
 
 import (
 	"time"
+
+	prismgoclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
 )
 
 // Reference ...
