@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	"docker-machine-driver-hyper-v/machine/driver/client/internal"
-	"docker-machine-driver-hyper-v/machine/driver/client/utils"
+	"github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/internal"
+	"github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/utils"
 )
 
 // Operations ...

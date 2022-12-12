@@ -15,6 +15,7 @@ import (
 	"os"
 	"strings"
 
+	prismgoclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
 	"github.com/PaesslerAG/jsonpath"
 	"github.com/go-logr/logr"
 	"github.com/go-logr/zapr"

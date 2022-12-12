@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"docker-machine-driver-hyper-v/machine/driver/client/internal"
+	"github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/internal"
 
 	"github.com/go-logr/logr"
 )

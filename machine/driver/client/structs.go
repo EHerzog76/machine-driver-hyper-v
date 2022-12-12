@@ -1,4 +1,4 @@
-package prismgoclient
+package vmclient
 
 // Credentials needed username and password
 type Credentials struct {
