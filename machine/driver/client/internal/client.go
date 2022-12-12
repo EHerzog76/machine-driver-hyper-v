@@ -437,7 +437,9 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) error
 		return fmt.Errorf(c.ErrorMsg)
 	}
 
-	req = req.WithContext(ctx)
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return err

@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	vmclient "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client"
 	"github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/utils"
 	v3 "github.com/EHerzog76/machine-driver-hyper-v/machine/driver/client/v3"
 
@@ -116,7 +117,7 @@ func (d *HyperVDriver) Create() error {
 	if d.Project != "" {
 
 		projectFilter := fmt.Sprintf("name==%s", d.Project)
-		projects, err := conn.V3.ListAllProject(projectFilter)
+		projects, err := conn.V3.ListAllProject(nil, projectFilter)
 		if err != nil {
 			return err
 		}
@@ -144,7 +145,7 @@ func (d *HyperVDriver) Create() error {
 	encodedCluster := c.String()
 	clusterFilter := fmt.Sprintf("name==%s", encodedCluster)
 
-	clusters, err := conn.V3.ListAllCluster(clusterFilter)
+	clusters, err := conn.V3.ListAllCluster(nil, clusterFilter)
 	if err != nil {
 		log.Errorf("Error getting clusters: [%v]", err)
 		return err
@@ -188,7 +189,7 @@ func (d *HyperVDriver) Create() error {
 		subnetFilter += fmt.Sprintf("name==%s", encodedSubnet)
 	}
 
-	subnets, err := conn.V3.ListAllSubnet(subnetFilter, getEmptyClientSideFilter())
+	subnets, err := conn.V3.ListAllSubnet(nil, subnetFilter, getEmptyClientSideFilter())
 	if err != nil {
 		log.Errorf("Error getting subnets: [%v]", err)
 		return err
@@ -238,7 +239,7 @@ func (d *HyperVDriver) Create() error {
 	i := &url.URL{Path: d.Image}
 	encodedImage := i.String()
 	imageFilter := fmt.Sprintf("name==%s", encodedImage)
-	images, err := conn.V3.ListAllImage(imageFilter)
+	images, err := conn.V3.ListAllImage(nil, imageFilter)
 	if err != nil {
 		log.Errorf("Error getting images: [%v]", err)
 		return err
@@ -381,7 +382,7 @@ func (d *HyperVDriver) Create() error {
 	request.Spec = spec
 
 	log.Infof("Launch VM creation")
-	resp, err := conn.V3.CreateVM(request)
+	resp, err := conn.V3.CreateVM(nil, request) //context.Background()
 	if err != nil {
 		log.Errorf("Error creating vm: [%v]", err)
 		return err
@@ -395,7 +396,7 @@ func (d *HyperVDriver) Create() error {
 	// Wait end of the task
 waitTask:
 	for i := 0; i < 60; i++ {
-		resp, err := conn.V3.GetTask(taskUUID)
+		resp, err := conn.V3.GetTask(nil, taskUUID)
 		if err != nil {
 			log.Errorf("Error getting task: [%v]", err)
 			return err
@@ -421,7 +422,7 @@ waitTask:
 
 	// Wait for the VM to be available
 	for i := 0; i < 60; i++ {
-		vmIntent, err := conn.V3.GetVM(uuid)
+		vmIntent, err := conn.V3.GetVM(nil, uuid)
 		if err != nil {
 			log.Errorf("Error getting vm: [%v]", err)
 			return err
@@ -451,7 +452,7 @@ waitTask:
 
 	// Wait for the VM obtain an IP address
 	for i := 0; i < 60; i++ {
-		vmInfo, err := conn.V3.GetVM(uuid)
+		vmInfo, err := conn.V3.GetVM(nil, uuid)
 		if err != nil {
 			log.Errorf("Error getting vm: [%v]", err)
 			return err
@@ -625,7 +626,7 @@ func (d *HyperVDriver) GetState() (state.State, error) {
 		return state.Error, err
 	}
 
-	resp, err := conn.V3.GetVM(d.VMId)
+	resp, err := conn.V3.GetVM(nil, d.VMId)
 	if err != nil {
 		return state.Error, err
 	}
@@ -664,7 +665,7 @@ func (d *HyperVDriver) Remove() error {
 	if err != nil {
 		return err
 	}
-	resp, err := conn.V3.DeleteVM(d.VMId)
+	resp, err := conn.V3.DeleteVM(nil, d.VMId)
 	if err != nil {
 		return err
 	}
@@ -673,7 +674,7 @@ func (d *HyperVDriver) Remove() error {
 
 	// Wait for the VM to be deleted
 	for i := 0; i < 1200; i++ {
-		resp, err := conn.V3.GetTask(taskUUID)
+		resp, err := conn.V3.GetTask(nil, taskUUID)
 		if err != nil || *resp.Status != "SUCCEEDED" {
 			<-time.After(1 * time.Second)
 			continue
@@ -766,7 +767,7 @@ func (d *HyperVDriver) Start() error {
 		return err
 	}
 
-	vmResp, err := conn.V3.GetVM(d.VMId)
+	vmResp, err := conn.V3.GetVM(nil, d.VMId)
 	if err != nil {
 		return err
 	}
@@ -777,7 +778,7 @@ func (d *HyperVDriver) Start() error {
 	request.Metadata = vmResp.Metadata
 	request.Spec.Resources.PowerState = utils.StringPtr("ON")
 
-	resp, err := conn.V3.UpdateVM(d.VMId, request)
+	resp, err := conn.V3.UpdateVM(nil, d.VMId, request)
 	if err != nil {
 		return err
 	}
@@ -786,7 +787,7 @@ func (d *HyperVDriver) Start() error {
 
 	// Wait for the VM to be deleted
 	for i := 0; i < 1200; i++ {
-		resp, err := conn.V3.GetTask(taskUUID)
+		resp, err := conn.V3.GetTask(nil, taskUUID)
 		if err != nil || *resp.Status != "SUCCEEDED" {
 			<-time.After(1 * time.Second)
 			continue
@@ -818,7 +819,7 @@ func (d *HyperVDriver) Stop() error {
 		return err
 	}
 
-	vmResp, err := conn.V3.GetVM(d.VMId)
+	vmResp, err := conn.V3.GetVM(nil, d.VMId)
 	if err != nil {
 		return err
 	}
@@ -829,7 +830,7 @@ func (d *HyperVDriver) Stop() error {
 	request.Metadata = vmResp.Metadata
 	request.Spec.Resources.PowerState = utils.StringPtr("OFF")
 
-	resp, err := conn.V3.UpdateVM(d.VMId, request)
+	resp, err := conn.V3.UpdateVM(nil, d.VMId, request)
 	if err != nil {
 		return err
 	}
@@ -838,7 +839,7 @@ func (d *HyperVDriver) Stop() error {
 
 	// Wait for the VM to be deleted
 	for i := 0; i < 1200; i++ {
-		resp, err := conn.V3.GetTask(taskUUID)
+		resp, err := conn.V3.GetTask(nil, taskUUID)
 		if err != nil || *resp.Status != "SUCCEEDED" {
 			<-time.After(1 * time.Second)
 			continue
